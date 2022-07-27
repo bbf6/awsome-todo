@@ -9,3 +9,8 @@ export default defineComponent({
   name: 'App'
 })
 </script>
+
+<style lang="sass">
+  .text-strikethrough
+    text-decoration: line-through
+</style>
