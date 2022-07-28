@@ -1,16 +1,3 @@
-<template>
-  <router-view />
+<template lang="pug">
+router-view
 </template>
-
-<script>
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'App'
-})
-</script>
-
-<style lang="sass">
-  .text-strikethrough
-    text-decoration: line-through
-</style>

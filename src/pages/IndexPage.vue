@@ -1,17 +1,9 @@
-<template>
-  <q-page padding>
-
-  </q-page>
+<template lang="pug">
+q-page(padding)
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue"
 
-export default defineComponent({
-  
-})
+export default defineComponent({})
 </script>
-
-<style lang="sass">
-
-</style>

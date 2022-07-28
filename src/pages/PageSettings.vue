@@ -1,5 +1,4 @@
-<template>
-  <q-page padding>
-    <p>Settings Page</p>
-  </q-page>
+<template lang="pug">
+q-page(padding)
+  p Settings Page
 </template>
