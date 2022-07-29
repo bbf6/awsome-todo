@@ -1,7 +1,8 @@
 <template lang="pug">
 q-page.q-ma-md
-  q-list(bordered separator v-if="taskStore.tasks.length")
-    Task(:key="task.id", v-for="task in taskStore.tasks", :task="task")
+  TaskList(title="Todo" :tasks="taskStore.tasksTodo" :ok="false" @showAddTask="showAddTask = true")
+  TaskList(title="Done" :tasks="taskStore.tasksDone" :ok="true" @showAddTask="showAddTask = true")
+
   .absolute-bottom.text-center.q-mb-lg
     q-btn(
       @click="showAddTask = true"
@@ -17,9 +18,9 @@ q-page.q-ma-md
 <script setup>
 import { ref } from "vue"
 import { useTaskStore } from "../stores/task"
-import Task from "../components/Tasks/Task"
 import AddTask from "../components/Modals/AddTask"
+import TaskList from '../components/Tasks/TaskList'
 
 const taskStore = useTaskStore()
-const showAddTask = ref(true)
+const showAddTask = ref(false)
 </script>

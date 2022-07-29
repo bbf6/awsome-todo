@@ -18,26 +18,39 @@ q-item(
         q-item-label.row.justify-end(caption)
           small {{ props.task.dueTime }}
   q-item-section(side)
-    q-btn(
-      flat
-      round
-      dense
-      color='red-4'
-      icon='delete'
-      @click.stop='promptToDelete(task.id)'
-    )
+    .row
+      q-btn(
+        flat
+        round
+        dense
+        color='primary'
+        icon='edit'
+        @click.stop='showEditTask = true'
+      )
+      q-btn(
+        flat
+        round
+        dense
+        color='red-4'
+        icon='delete'
+        @click.stop='promptToDelete(task.id)'
+      )
+  q-dialog(v-model="showEditTask")
+    EditTask(:task="task" @close="showEditTask = false")
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { useQuasar } from "quasar"
 import { useTaskStore } from "../../stores/task"
+import EditTask from '../Modals/EditTask'
 
 const $q = useQuasar()
 const taskStore = useTaskStore()
 const props = defineProps({
   task: Object
 })
+const showEditTask = ref(false)
 const isCompleted = computed(() => props.task.completed)
 const promptToDelete = (id) => {
   $q.dialog({
