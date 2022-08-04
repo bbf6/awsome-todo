@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
 import { uid } from 'quasar'
 
+const filter = (task, pattern) => (
+  task.name.toLowerCase().includes(pattern.toLowerCase())
+)
+
 export const useTaskStore = defineStore('task', {
   state: () => ({
     tasks: [
@@ -26,16 +30,20 @@ export const useTaskStore = defineStore('task', {
         dueTime: '08:00'
       }
     ],
-    isValid: () => false
+    isValid: () => false,
+    search: '',
+    sortBy: 'name'
   }),
 
   getters: {
-    tasksTodo (state) {
-      return state.tasks.filter(t => !t.completed)
-    },
-    tasksDone (state) {
-      return state.tasks.filter(t => t.completed)
-    }
+    tasksFiltered: state => state.tasks.filter(t => filter(t, state.search)),
+    tasksSorted: state => (
+      state.tasksFiltered.sort((a, b) => (
+        a[state.sortBy].toLowerCase() > b[state.sortBy].toLowerCase()
+      ))
+    ),
+    tasksTodo: state => state.tasksSorted.filter(t => !t.completed),
+    tasksDone: state => state.tasksSorted.filter(t => t.completed)
   },
 
   actions: {

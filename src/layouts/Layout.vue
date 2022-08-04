@@ -3,6 +3,12 @@ q-layout(view='hHh LpR fFf')
   q-header(elevated)
     q-toolbar
       q-toolbar-title.absolute-center.text-grey-8 Awesome Todo
+      q-btn.absolute-right.text-grey-8(
+        flat
+        icon-right="account_circle"
+        label="Login"
+        to="/login"
+      )
   q-footer
     q-tabs.text-grey-8
       q-route-tab(
@@ -43,7 +49,7 @@ const linksList = [
     title: "Settings",
     icon: "settings",
     link: "/settings"
-  },
+  }
 ]
 
 export default defineComponent({
