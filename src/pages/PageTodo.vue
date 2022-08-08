@@ -1,5 +1,5 @@
 <template lang="pug">
-q-page
+q-page(v-if="!taskStore.loading")
   .q-pa-md.absolute.full-width.full-height.column
     .row.q-mb-lg
       Search
@@ -20,6 +20,9 @@ q-page
       )
   q-dialog(v-model="showAddTask")
     AddTask(@close="showAddTask = false")
+q-page(v-else)
+  .absolute-center
+    q-spinner(color="primary" size="5em")
 </template>
 
 <script setup>

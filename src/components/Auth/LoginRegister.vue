@@ -1,5 +1,7 @@
 <template lang="pug">
 form(@submit.prevent="submitForm")
+  .row.q-mb-md(v-if="authStore.loading")
+    | Loading...
   .row.q-mb-md
     q-banner.bg-grey-3.col
       template(v-slot:avatar)
@@ -13,6 +15,7 @@ form(@submit.prevent="submitForm")
       ref="txtEmail"
       label="Email"
       type="email"
+      :rules="[ val => validateEmail(val) || 'This email is invalid' ]"
     )
 
   .row.q-mb-md
@@ -36,10 +39,12 @@ form(@submit.prevent="submitForm")
 
 <script setup>
 import { ref } from 'vue'
+import { useAuthStore } from 'src/stores/auth'
 
 const email = ref('')
 const password = ref('')
 
+const authStore = useAuthStore()
 const props = defineProps({
   tab: String
 })
@@ -50,11 +55,16 @@ const txtPassword = ref(null)
 const isLoginTab = () => props.tab === 'login'
 const getButtonLabel = () => isLoginTab() ? 'Login' : 'Register'
 
+const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const validateEmail = email => email.toLowerCase().match(emailRegex)
+
 const submitForm = () => {
+  txtEmail.value.validate()
+  txtPassword.value.validate()
   if (txtEmail.value.hasError || txtPassword.value.hasError) return false
   if (isLoginTab())
-    console.log('login')
+    authStore.loginUser(email.value, password.value)
   else
-    console.log('register')
+    authStore.registerUser(email.value, password.value)
 }
 </script>

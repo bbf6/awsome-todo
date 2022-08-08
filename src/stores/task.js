@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { uid } from 'quasar'
+import { LocalStorage, uid } from 'quasar'
 
 const filter = (task, pattern) => (
   task.name.toLowerCase().includes(pattern.toLowerCase())
@@ -7,32 +7,11 @@ const filter = (task, pattern) => (
 
 export const useTaskStore = defineStore('task', {
   state: () => ({
-    tasks: [
-      {
-        id: 1,
-        name: 'Got to shop',
-        completed: false,
-        dueDate: '2019/05/12',
-        dueTime: '10:00'
-      },
-      {
-        id: 2,
-        name: 'Get bananas',
-        completed: true,
-        dueDate: '2019/05/13',
-        dueTime: '14:30'
-      },
-      {
-        id: 3,
-        name: 'Get apples',
-        completed: false,
-        dueDate: '2019/05/14',
-        dueTime: '08:00'
-      }
-    ],
+    tasks: LocalStorage.getItem('tasks') || [],
     isValid: () => false,
     search: '',
-    sortBy: 'name'
+    sortBy: 'name',
+    loading: false
   }),
 
   getters: {
@@ -50,6 +29,7 @@ export const useTaskStore = defineStore('task', {
     addTask(task) {
       task.id = uid()
       this.tasks.push(task)
+      LocalStorage.set('tasks', this.tasks)
     },
     updateTaskData(task) {
       const findedTask = this.tasks.find(t => t.id === task.id)
@@ -58,14 +38,17 @@ export const useTaskStore = defineStore('task', {
       findedTask.dueDate = task.dueDate
       findedTask.dueTime = task.dueTime
       findedTask.completed = task.completed
+      LocalStorage.set('tasks', this.tasks)
     },
     updateTask(id) {
       const task = this.tasks.find(t => t.id === id)
       if (!task) return null
       task.completed = !task.completed
+      LocalStorage.set('tasks', this.tasks)
     },
     deleteTask(id) {
       this.tasks = this.tasks.filter(t => t.id !== id)
+      LocalStorage.set('tasks', this.tasks)
     }
   }
 })

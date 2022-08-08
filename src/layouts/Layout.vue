@@ -4,15 +4,23 @@ q-layout(view='hHh LpR fFf')
     q-toolbar
       q-toolbar-title.absolute-center.text-grey-8 Awesome Todo
       q-btn.absolute-right.text-grey-8(
+        v-if="!authStore.loggedIn"
         flat
         icon-right="account_circle"
         label="Login"
         to="/login"
       )
+      q-btn.absolute-right.text-grey-8(
+        v-if="authStore.loggedIn"
+        flat
+        icon-right="account_circle"
+        label="Logout"
+        @click="logout"
+      )
   q-footer
     q-tabs.text-grey-8
       q-route-tab(
-        v-for='link in essentialLinks'
+        v-for='link in linksList'
         :key='link.title'
         :icon='link.icon'
         :label='link.title'
@@ -27,7 +35,7 @@ q-layout(view='hHh LpR fFf')
     q-list
       q-item-label.text-grey-8(header) Navigation
       EssentialLink(
-        v-for='link in essentialLinks'
+        v-for='link in linksList'
         :key='link.title'
         v-bind='link'
       )
@@ -35,9 +43,9 @@ q-layout(view='hHh LpR fFf')
     router-view
 </template>
 
-<script>
-import { defineComponent, ref } from "vue"
+<script setup>
 import EssentialLink from "components/EssentialLink.vue"
+import { useAuthStore } from "src/stores/auth"
 
 const linksList = [
   {
@@ -51,26 +59,12 @@ const linksList = [
     link: "/settings"
   }
 ]
-
-export default defineComponent({
-  name: "MainLayout",
-
-  components: {
-    EssentialLink
-  },
-
-  setup() {
-    const leftDrawerOpen = ref(false)
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }
-})
+const leftDrawerOpen = false
+const authStore = useAuthStore()
+const logout = () => {
+  authStore.logoutUser()
+  window.location.href = '/login'
+}
 </script>
 
 <style lang="sass">

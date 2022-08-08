@@ -6,20 +6,12 @@ const defaultSettingsValues = {
   showTasksInOneList: false
 }
 
-export const useSettingsStore = defineStore('counter', {
+export const useSettingsStore = defineStore('settings', {
   state: () => ({
     settings: LocalStorage.getItem('settings') || defaultSettingsValues
   }),
 
-  getters: {
-    doubleCount (state) {
-      return state.counter * 2
-    }
-  },
+  getters: {},
 
-  actions: {
-    increment () {
-      this.counter++
-    }
-  }
+  actions: {}
 })
