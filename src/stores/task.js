@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { LocalStorage, uid } from 'quasar'
+import { LocalStorage, Notify, uid } from 'quasar'
 
 const filter = (task, pattern) => (
   task.name.toLowerCase().includes(pattern.toLowerCase())
@@ -30,6 +30,12 @@ export const useTaskStore = defineStore('task', {
       task.id = uid()
       this.tasks.push(task)
       LocalStorage.set('tasks', this.tasks)
+      Notify.create({
+        icon: 'check',
+        position: 'top-right',
+        color: 'positive',
+        message: 'New task created'
+      })
     },
     updateTaskData(task) {
       const findedTask = this.tasks.find(t => t.id === task.id)
@@ -39,16 +45,34 @@ export const useTaskStore = defineStore('task', {
       findedTask.dueTime = task.dueTime
       findedTask.completed = task.completed
       LocalStorage.set('tasks', this.tasks)
+      Notify.create({
+        icon: 'edit',
+        position: 'top-right',
+        color: 'accent',
+        message: 'Task updated'
+      })
     },
     updateTask(id) {
       const task = this.tasks.find(t => t.id === id)
       if (!task) return null
       task.completed = !task.completed
       LocalStorage.set('tasks', this.tasks)
+      Notify.create({
+        icon: task.completed ? 'check' : 'clear',
+        position: 'top-right',
+        color: task.completed ? 'positive' : 'orange-6',
+        message: `Task ${task.completed ? 'done' : 'undone'}`
+      })
     },
     deleteTask(id) {
       this.tasks = this.tasks.filter(t => t.id !== id)
       LocalStorage.set('tasks', this.tasks)
+      Notify.create({
+        icon: 'delete',
+        position: 'top-right',
+        color: 'negative',
+        message: 'Task deleted'
+      })
     }
   }
 })
