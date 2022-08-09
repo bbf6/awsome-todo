@@ -39,13 +39,26 @@ q-layout(view='hHh LpR fFf')
         :key='link.title'
         v-bind='link'
       )
+      q-item(
+        v-if="$q.platform.is.electron"
+        @click="quitApp"
+        class="text-grey-8 absolute-bottom"
+        clickable
+      )
+        q-item-section(avatar)
+          q-icon(name="power_settings_new")
+        q-item-section
+          q-item-label="Quit"
   q-page-container
     router-view
 </template>
 
 <script setup>
+import { useQuasar } from 'quasar'
 import EssentialLink from "components/EssentialLink.vue"
 import { useAuthStore } from "src/stores/auth"
+
+const $q = useQuasar()
 
 const linksList = [
   {
@@ -64,6 +77,17 @@ const authStore = useAuthStore()
 const logout = () => {
   authStore.logoutUser()
   window.location.href = '/login'
+}
+const quitApp = () => {
+  $q.dialog({
+    title: 'Confirm',
+    message: 'Really quit Awesome Todo?',
+    cancel: true,
+    persistent: true
+  })
+    .onOk(() => {
+      // require('electron').ipcRenderer.send('quit-app')
+    })
 }
 </script>
 
