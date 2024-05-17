@@ -1,8 +1,18 @@
-FROM steebchen/nginx-spa:stable
+FROM node:18.13.0 AS build
 
-COPY dist/spa/ /app
+FROM build as config
+WORKDIR /app
+COPY package.json package.json
+RUN npm install --quiet
+COPY . .
+RUN npm i -g @quasar/cli
+RUN quasar build
 
-EXPOSE 80
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=config /app/dist/spa .
+RUN rm /etc/nginx/conf.d/default.conf
+COPY --from=config /app/default.conf /etc/nginx/conf.d/default.conf
 
-CMD ["nginx"]
-
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
