@@ -1,0 +1,9 @@
+version: "3.2"
+
+services:
+  awsome_todo:
+    build: .
+    container_name: awsome_todo
+    ports:
+      - "5759:80"
+
