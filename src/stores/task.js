@@ -1,9 +1,25 @@
 import { defineStore } from 'pinia'
-import { LocalStorage, Notify, uid } from 'quasar'
+import { LocalStorage } from 'quasar'
+import { api } from 'src/boot/axios'
+import { showOkAlert, showErrorAlert } from 'src/lib/notification'
 
 const filter = (task, pattern) => (
   task.name.toLowerCase().includes(pattern.toLowerCase())
 )
+
+const format = task => ({
+  id: task.id,
+  name: task.name,
+  dueDate: task?.due_date?.substr(0, 10),
+  dueTime: task?.due_date?.substr(11, 5),
+  completed: task.is_completed
+})
+
+const saveParams = task => ({
+  id: task.id,
+  name: task.name,
+  due_date: `${task.dueDate} ${task.dueTime}`
+})
 
 export const useTaskStore = defineStore('task', {
   state: () => ({
@@ -13,7 +29,6 @@ export const useTaskStore = defineStore('task', {
     sortBy: 'name',
     loading: false
   }),
-
   getters: {
     tasksFiltered: state => state.tasks.filter(t => filter(t, state.search)),
     tasksSorted: state => (
@@ -24,55 +39,35 @@ export const useTaskStore = defineStore('task', {
     tasksTodo: state => state.tasksSorted.filter(t => !t.completed),
     tasksDone: state => state.tasksSorted.filter(t => t.completed)
   },
-
   actions: {
-    addTask(task) {
-      task.id = uid()
-      this.tasks.push(task)
-      LocalStorage.set('tasks', this.tasks)
-      Notify.create({
-        icon: 'check',
-        position: 'top-right',
-        color: 'positive',
-        message: 'New task created'
-      })
+    load() {
+      api.get('/tasks')
+        .then(response => {
+          this.tasks = response.data.map(format)
+          LocalStorage.set('tasks', this.tasks)
+        })
+        .catch(error => showErrorAlert(error))
     },
-    updateTaskData(task) {
-      const findedTask = this.tasks.find(t => t.id === task.id)
-      if (!task) return null
-      findedTask.nobre = task.nobre
-      findedTask.dueDate = task.dueDate
-      findedTask.dueTime = task.dueTime
-      findedTask.completed = task.completed
-      LocalStorage.set('tasks', this.tasks)
-      Notify.create({
-        icon: 'edit',
-        position: 'top-right',
-        color: 'accent',
-        message: 'Task updated'
-      })
+    add(task) {
+      api.post('/tasks', saveParams(task))
+        .then(response => this.load())
+        .catch(error => showErrorAlert(error))
     },
-    updateTask(id) {
-      const task = this.tasks.find(t => t.id === id)
-      if (!task) return null
-      task.completed = !task.completed
-      LocalStorage.set('tasks', this.tasks)
-      Notify.create({
-        icon: task.completed ? 'check' : 'clear',
-        position: 'top-right',
-        color: task.completed ? 'positive' : 'orange-6',
-        message: `Task ${task.completed ? 'done' : 'undone'}`
-      })
+    update(task) {
+      api.put(`/tasks/${task.id}`, saveParams(task))
+        .then(response => this.load())
+        .catch(error => showErrorAlert(error))
     },
-    deleteTask(id) {
-      this.tasks = this.tasks.filter(t => t.id !== id)
-      LocalStorage.set('tasks', this.tasks)
-      Notify.create({
-        icon: 'delete',
-        position: 'top-right',
-        color: 'negative',
-        message: 'Task deleted'
-      })
+    delete(id) {
+      api.delete(`/tasks/${id}`)
+        .then(response => this.load())
+        .catch(error => showErrorAlert(error))
+    },
+    toggleCompletion(task) {
+      const URL = task.completed ? '/tasks/undo_complete/' : '/tasks/complete/'
+      api.post(`${URL}${task.id}`, {})
+        .then(response => this.load())
+        .catch(error => showErrorAlert(error))
     }
   }
 })

@@ -5,7 +5,7 @@ transition(
   leave-active-class="animated zoomOut absolute-top"
 )
   q-item(
-    @click='taskStore.updateTask(task.id)'
+    @click='taskStore.toggleCompletion(task)'
     tag='label'
     :class="isCompleted ? 'bg-teal-1' : 'bg-amber-1'"
     v-touch-hold:1000.mouse="showEditTaskModal"
@@ -48,10 +48,11 @@ transition(
 </template>
 
 <script setup>
-import { computed, ref } from "vue"
-import { date, useQuasar } from "quasar"
-import { useTaskStore } from "../../stores/task"
-import { useSettingsStore } from "src/stores/settings"
+import { computed, ref } from 'vue'
+import { date, useQuasar } from 'quasar'
+import { confirmAction } from 'src/lib/notification'
+import { useTaskStore } from '../../stores/task'
+import { useSettingsStore } from 'src/stores/settings'
 import EditTask from '../Modals/EditTask'
 
 const $q = useQuasar()
@@ -62,19 +63,11 @@ const props = defineProps({
 })
 const showEditTask = ref(false)
 const isCompleted = computed(() => props.task.completed)
-const promptToDelete = (id) => {
-  $q.dialog({
-    title: "Confirm",
-    message: "Really delete?",
-    ok: { push: true },
-    cancel: { color: "negative" },
-    persistent: true,
-  }).onOk(() => {
-    taskStore.deleteTask(id)
-  })
-}
+const promptToDelete = id =>
+  confirmAction('Really delete?', () => taskStore.delete(id))
 const showEditTaskModal = () => showEditTask.value = true
 const getHiglihtedHtml = () => `<span class="bg-yellow-6">${taskStore.search}</span>`
+
 const searchHighlight = () => {
   const search = taskStore.search
   if (!search)
@@ -82,6 +75,7 @@ const searchHighlight = () => {
   const searchRegex  = new RegExp(search, 'ig')
   return props.task.name.replace(searchRegex, getHiglihtedHtml())
 }
+
 const taskDueTime = () => {
   if (!settingsStore.settings.show12HourTimeFormat)
     return props.task.dueTime

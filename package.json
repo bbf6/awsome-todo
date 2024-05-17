@@ -2,7 +2,7 @@
   "name": "awesome-todo",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "productName": "Todo app",
   "author": "alex <alex.guajardo@inroute.com.mx>",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@rails/actioncable": "^7.0.8-2",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "node": "^18.7.0",

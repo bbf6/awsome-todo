@@ -22,8 +22,8 @@ q-card
 </template>
 
 <script setup>
-import { ref } from "vue"
-import { useTaskStore } from "../../stores/task"
+import { ref } from 'vue'
+import { useTaskStore } from '../../stores/task'
 import ModalHeader from './Shared/ModalHeader'
 import ModalTaskName from './Shared/ModalTaskName'
 import ModalTaskDueDate from './Shared/ModalTaskDueDate'
@@ -47,7 +47,7 @@ const submitForm = () => {
 }
 
 const submitTask = () => {
-  taskStore.updateTaskData(taskToSubmit.value)
+  taskStore.update(taskToSubmit.value)
   emit('close')
 }
 </script>
