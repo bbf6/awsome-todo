@@ -6,6 +6,7 @@ COPY package.json package.json
 RUN npm install --quiet
 COPY . .
 RUN npm i -g @quasar/cli
+RUN npm update
 RUN quasar build
 
 FROM nginx:alpine
