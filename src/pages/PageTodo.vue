@@ -2,12 +2,12 @@
 q-page(v-if="!taskStore.loading")
   .q-pa-md.absolute.full-width.full-height.column
     .row.q-mb-lg
-      Search
+      search
       Sort
     q-scroll-area.q-scroll-area-task
       .relative-position
-        TaskList(title="Todo" :tasks="taskStore.tasksTodo" :ok="false" @showAddTask="showAddTask = true")
-        TaskList.q-mb-xl(title="Done" :tasks="taskStore.tasksDone" :ok="true" @showAddTask="showAddTask = true")
+        task-list(title="Todo" :tasks="taskStore.tasksTodo" :ok="false" @showAddTask="showAddTask = true")
+        task-list.q-mb-xl(title="Done" :tasks="taskStore.tasksDone" :ok="true" @showAddTask="showAddTask = true")
         h5(v-if="displayNoResults()")="No results"
 
     .absolute-bottom.text-center.q-mb-lg.no-pointer-events
@@ -19,16 +19,16 @@ q-page(v-if="!taskStore.loading")
         icon="add"
       )
   q-dialog(v-model="showAddTask")
-    AddTask(@close="showAddTask = false")
+    add-task(@close="showAddTask = false")
 q-page(v-else)
   .absolute-center
     q-spinner(color="primary" size="5em")
 </template>
 
 <script setup>
-import { ref } from "vue"
-import { useTaskStore } from "../stores/task"
-import AddTask from "../components/Modals/AddTask"
+import { ref } from 'vue'
+import { useTaskStore } from '../stores/task'
+import AddTask from '../components/Modals/AddTask'
 import TaskList from '../components/Tasks/TaskList'
 import Search from '../components/Tools/Search'
 import Sort from '../components/Tools/Sort'

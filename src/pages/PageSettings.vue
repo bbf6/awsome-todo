@@ -1,6 +1,5 @@
 <template lang="pug">
 q-page(padding)
-
   q-list(bordered padding)
     q-item-label(header)="Settings"
     q-item(tag="label" v-ripple)
@@ -13,7 +12,6 @@ q-page(padding)
         q-item-label="Show tasks in one list"
       q-item-section(side)
         q-toggle(v-model="settingsStore.settings.showTasksInOneList")
-
   q-list(bordered padding)
     q-item-label(header)="More"
     q-item(tag="label" v-ripple to="/settings/help")
@@ -31,7 +29,11 @@ q-page(padding)
         q-item-label="Email us"
       q-item-section(side)
         q-icon(name="chevron_right")
-
+    q-item(tag="label" v-ripple @click="checkApi")
+      q-item-section
+        q-item-label="Check the api documentation"
+      q-item-section(side)
+        q-icon(name="chevron_right")
 </template>
 
 <script setup>
@@ -44,6 +46,7 @@ watch(settingsStore.settings, val => (
   LocalStorage.set('settings', val), { deep: true }
 ))
 const visitOurwebsite = () => openURL('https://devartiral.com')
+const checkApi = () => openURL('https://todo.devartiral.com/api-docs')
 const emailUrl = 'alex.guajardo@inroute.com.mx'
 const emailUs = () => window.location.href = `mailto:${emailUrl}?subject=Awesome Todo feedback`
 </script>

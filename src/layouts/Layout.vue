@@ -2,21 +2,7 @@
 q-layout(view='hHh LpR fFf')
   q-header(elevated)
     q-toolbar
-      q-toolbar-title.absolute-center.text-grey-8 Awesome Todo
-      q-btn.absolute-right.text-grey-8(
-        v-if="!authStore.loggedIn"
-        flat
-        icon-right="account_circle"
-        label="Login"
-        to="/login"
-      )
-      q-btn.absolute-right.text-grey-8(
-        v-if="authStore.loggedIn"
-        flat
-        icon-right="account_circle"
-        label="Logout"
-        @click="logout"
-      )
+      q-toolbar-title.absolute-center.text-grey-8="Awesome Todo"
   q-footer
     q-tabs.text-grey-8
       q-route-tab(
@@ -33,7 +19,7 @@ q-layout(view='hHh LpR fFf')
     :breakpoint='767'
   )
     q-list
-      q-item-label.text-grey-8(header) Navigation
+      q-item-label.text-grey-8(header)="Navigation"
       EssentialLink(
         v-for='link in linksList'
         :key='link.title'
@@ -56,7 +42,6 @@ q-layout(view='hHh LpR fFf')
 <script setup>
 import { useQuasar } from 'quasar'
 import EssentialLink from "components/EssentialLink.vue"
-import { useAuthStore } from "src/stores/auth"
 
 const $q = useQuasar()
 
@@ -72,12 +57,9 @@ const linksList = [
     link: "/settings"
   }
 ]
+
 const leftDrawerOpen = false
-const authStore = useAuthStore()
-const logout = () => {
-  authStore.logoutUser()
-  window.location.href = '/login'
-}
+
 const quitApp = () => {
   $q.dialog({
     title: 'Confirm',
