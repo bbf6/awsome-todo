@@ -3,6 +3,7 @@ FROM node:20.11.0 AS build
 FROM build as config
 WORKDIR /app
 COPY package.json package.json
+COPY package-lock.json package-lock.json
 RUN npm install --quiet
 COPY . .
 RUN npm i -g @quasar/cli
