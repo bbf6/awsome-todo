@@ -2,6 +2,8 @@
 
 This is a Quasar project to write "to do tasks". A fully implementation is available on [https://todo.devartiral.com](https://todo.devartiral.com).
 
+The api repository for this app is in [this repository](https://github.com/bbf6/todo-api).
+
 The features included in this app are:
 - Creation of task with schedule.
 - Option to show the task split by done and undone or all together.
